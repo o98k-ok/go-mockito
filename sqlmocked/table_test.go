@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/brianvoe/gofakeit"
+	"github.com/brianvoe/gofakeit/v6"
 )
 
 func TestTable_Titles(t *testing.T) {

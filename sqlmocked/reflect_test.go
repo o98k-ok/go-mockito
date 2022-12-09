@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/brianvoe/gofakeit"
+	"github.com/brianvoe/gofakeit/v6"
 )
 
 func TestSimpleExtract_ExtractTypes(t *testing.T) {

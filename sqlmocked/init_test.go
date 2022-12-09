@@ -29,7 +29,7 @@ func realDBConn() *sql.DB {
 }
 
 func TestNewUnitTestDBInstance(t *testing.T) {
-	defer NewUnitTestDBInstance(nil, realDBConn, false).Close()
+	// defer NewUnitTestDBInstance(nil, realDBConn, false).Close()
 	defer NewUnitTestDBInstance(func(conn *gorm.DB, mocker sqlmock.Sqlmock) {
 		// setting your conn
 		// xxx = conn
