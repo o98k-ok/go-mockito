@@ -10,14 +10,14 @@ import (
 )
 
 func TestTable_Titles(t *testing.T) {
-	table := NewTable[TestStruct]("gorm")
+	table := NewTable[TestStruct]()
 	expect := []string{"name", "age", "job"}
 	got := table.Titles()
 	if !reflect.DeepEqual(got, expect) {
 		t.Errorf("table.Titles test faile, got %v, expect %v", got, expect)
 	}
 
-	nested := NewTable[Nested]("gorm")
+	nested := NewTable[Nested]()
 	expect = []string{"job"}
 	got = nested.Titles()
 	if !reflect.DeepEqual(got, expect) {
@@ -26,7 +26,7 @@ func TestTable_Titles(t *testing.T) {
 }
 
 func TestTable_Values(t *testing.T) {
-	table := NewTable[TestStruct]("gorm")
+	table := NewTable[TestStruct]()
 	demo := TestStruct{
 		Name:  gofakeit.Name(),
 		Empty: gofakeit.UUID(),
@@ -50,7 +50,7 @@ func TestTable_Fresh(t *testing.T) {
 		Code  *string `gorm:"column:code" json:"code" fake:"{uuid}"`
 		Token *string `gorm:"column:token" json:"token" fake:"{uuid}"`
 	}
-	table := NewTable[Status]("gorm")
+	table := NewTable[Status]()
 	table.Fresh()
 
 	dat, err := json.Marshal(table.Struct)

@@ -16,12 +16,14 @@ type Table[T any] struct {
 	extract Extract
 }
 
-func NewTable[T any](typ string) *Table[T] {
-	return &Table[T]{
+func NewTable[T any]() *Table[T] {
+	res := &Table[T]{
 		Struct:  new(T),
-		srcType: typ,
+		srcType: "gorm",
 		extract: SimpleExtract{},
 	}
+	res.Fresh()
+	return res
 }
 
 // Titles through gorm:"column:xx"
