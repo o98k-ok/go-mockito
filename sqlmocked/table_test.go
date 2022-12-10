@@ -51,11 +51,11 @@ func TestTable_Fresh(t *testing.T) {
 		Token *string `gorm:"column:token" json:"token" fake:"{uuid}"`
 	}
 	table := NewTable[Status]()
+	data0 := table.Data().(Status)
 	table.Fresh()
-
-	dat, err := json.Marshal(table.Struct)
-	if err != nil {
-		t.Errorf("test table data fresh failed %v", err)
-	}
-	t.Log(string(dat))
+	data1 := table.Data().(Status)
+	d, _ := json.Marshal(data0)
+	t.Log(string(d))
+	d, _ = json.Marshal(data1)
+	t.Log(string(d))
 }

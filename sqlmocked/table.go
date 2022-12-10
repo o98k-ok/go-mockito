@@ -10,6 +10,10 @@ import (
 	"github.com/brianvoe/gofakeit/v6"
 )
 
+func init() {
+	gofakeit.Seed(time.Now().Unix())
+}
+
 type Table[T any] struct {
 	Struct  T
 	srcType string
@@ -18,6 +22,7 @@ type Table[T any] struct {
 
 func NewTable[T any]() *Table[T] {
 	res := &Table[T]{
+		Struct:  *new(T),
 		srcType: "gorm",
 		extract: SimpleExtract{},
 	}
@@ -51,7 +56,7 @@ func (t *Table[T]) Values() []driver.Value {
 }
 
 func (t *Table[T]) Fresh() {
-	gofakeit.Seed(time.Now().Unix())
+	t.Struct = *new(T)
 	gofakeit.Struct(&t.Struct)
 }
 
