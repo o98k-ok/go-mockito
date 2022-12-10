@@ -10,7 +10,8 @@ type (
 	SqlMockRepo interface {
 		Titles() []string
 		Values() []driver.Value
-		Row() sqlmock.Rows
+		Row() *sqlmock.Rows
 		Fresh()
+		Data() interface{}
 	}
 )

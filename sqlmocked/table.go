@@ -56,6 +56,10 @@ func (t *Table[T]) Fresh() {
 	gofakeit.Struct(t.Struct)
 }
 
-func (t *Table[T]) Rows() *sqlmock.Rows {
+func (t *Table[T]) Row() *sqlmock.Rows {
 	return sqlmock.NewRows(t.Titles()).AddRow(t.Values()...)
+}
+
+func (t *Table[T]) Data() interface{} {
+	return t.Struct
 }

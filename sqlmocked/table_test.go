@@ -10,7 +10,7 @@ import (
 )
 
 func TestTable_Titles(t *testing.T) {
-	table := NewTable[TestStruct]()
+	var table SqlMockRepo = NewTable[TestStruct]()
 	expect := []string{"name", "age", "job"}
 	got := table.Titles()
 	if !reflect.DeepEqual(got, expect) {
