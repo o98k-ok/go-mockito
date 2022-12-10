@@ -34,7 +34,7 @@ func TestTable_Values(t *testing.T) {
 			Job: gofakeit.JobTitle(),
 		},
 	}
-	table.Struct = &demo
+	table.Struct = demo
 	expect := []driver.Value{demo.Name, demo.Empty, demo.Age, demo.Nested.Job}
 
 	got := table.Values()

@@ -11,14 +11,13 @@ import (
 )
 
 type Table[T any] struct {
-	Struct  *T
+	Struct  T
 	srcType string
 	extract Extract
 }
 
 func NewTable[T any]() *Table[T] {
 	res := &Table[T]{
-		Struct:  new(T),
 		srcType: "gorm",
 		extract: SimpleExtract{},
 	}
@@ -53,7 +52,7 @@ func (t *Table[T]) Values() []driver.Value {
 
 func (t *Table[T]) Fresh() {
 	gofakeit.Seed(time.Now().Unix())
-	gofakeit.Struct(t.Struct)
+	gofakeit.Struct(&t.Struct)
 }
 
 func (t *Table[T]) Row() *sqlmock.Rows {
