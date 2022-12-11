@@ -15,25 +15,28 @@ func init() {
 }
 
 type Table[T any] struct {
-	Struct  T
 	srcType string
 	extract Extract
 }
 
 func NewTable[T any]() *Table[T] {
 	res := &Table[T]{
-		Struct:  *new(T),
 		srcType: "gorm",
 		extract: SimpleExtract{},
 	}
-	res.Fresh()
 	return res
 }
 
+func (t *Table[T]) NewRecord() T {
+	record := new(T)
+	gofakeit.Struct(record)
+	return *record
+}
+
 // Titles through gorm:"column:xx"
-func (t *Table[T]) Titles() []string {
+func (t *Table[T]) Titles(record T) []string {
 	var res []string
-	t.extract.ExtractTypes(reflect.TypeOf(t.Struct), func(sf reflect.StructField) {
+	t.extract.ExtractTypes(reflect.TypeOf(&record), func(sf reflect.StructField) {
 		tag := sf.Tag.Get(t.srcType)
 		prefix := "column:"
 		index := strings.Index(tag, prefix)
@@ -44,9 +47,9 @@ func (t *Table[T]) Titles() []string {
 	return res
 }
 
-func (t *Table[T]) Values() []driver.Value {
+func (t *Table[T]) Values(record T) []driver.Value {
 	var res []driver.Value
-	t.extract.ExtractVals(reflect.ValueOf(t.Struct), func(v reflect.Value) {
+	t.extract.ExtractVals(reflect.ValueOf(&record), func(v reflect.Value) {
 		if v.Kind() == reflect.Pointer {
 			v = v.Elem()
 		}
@@ -55,15 +58,6 @@ func (t *Table[T]) Values() []driver.Value {
 	return res
 }
 
-func (t *Table[T]) Fresh() {
-	t.Struct = *new(T)
-	gofakeit.Struct(&t.Struct)
-}
-
-func (t *Table[T]) Row() *sqlmock.Rows {
-	return sqlmock.NewRows(t.Titles()).AddRow(t.Values()...)
-}
-
-func (t *Table[T]) Data() interface{} {
-	return t.Struct
+func (t *Table[T]) Row(record T) *sqlmock.Rows {
+	return sqlmock.NewRows(t.Titles(record)).AddRow(t.Values(record)...)
 }

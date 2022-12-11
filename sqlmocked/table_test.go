@@ -2,7 +2,6 @@ package sqlmocked
 
 import (
 	"database/sql/driver"
-	"encoding/json"
 	"reflect"
 	"testing"
 
@@ -10,16 +9,19 @@ import (
 )
 
 func TestTable_Titles(t *testing.T) {
-	var table SqlMockRepo = NewTable[TestStruct]()
+	table := NewTable[TestStruct]()
+	record := table.NewRecord()
+
 	expect := []string{"name", "age", "job"}
-	got := table.Titles()
+	got := table.Titles(record)
 	if !reflect.DeepEqual(got, expect) {
 		t.Errorf("table.Titles test faile, got %v, expect %v", got, expect)
 	}
 
 	nested := NewTable[Nested]()
+	nestRecord := nested.NewRecord()
 	expect = []string{"job"}
-	got = nested.Titles()
+	got = nested.Titles(nestRecord)
 	if !reflect.DeepEqual(got, expect) {
 		t.Errorf("table.Titles test failed, got %v, expect %v", got, expect)
 	}
@@ -34,28 +36,10 @@ func TestTable_Values(t *testing.T) {
 			Job: gofakeit.JobTitle(),
 		},
 	}
-	table.Struct = demo
 	expect := []driver.Value{demo.Name, demo.Empty, demo.Age, demo.Nested.Job}
 
-	got := table.Values()
+	got := table.Values(demo)
 	if !reflect.DeepEqual(got, expect) {
 		t.Errorf("TestTable_Values failed, got %v, expect %v", got, expect)
 	}
-}
-
-func TestTable_Fresh(t *testing.T) {
-	type Status struct {
-		Id    *uint32 `gorm:"column:id" json:"-" fake:"skip"`
-		Name  *string `gorm:"column:name" json:"name" fake:"{firstname}"`
-		Code  *string `gorm:"column:code" json:"code" fake:"{uuid}"`
-		Token *string `gorm:"column:token" json:"token" fake:"{uuid}"`
-	}
-	table := NewTable[Status]()
-	data0 := table.Data().(Status)
-	table.Fresh()
-	data1 := table.Data().(Status)
-	d, _ := json.Marshal(data0)
-	t.Log(string(d))
-	d, _ = json.Marshal(data1)
-	t.Log(string(d))
 }
