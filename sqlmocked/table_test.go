@@ -9,26 +9,23 @@ import (
 )
 
 func TestTable_Titles(t *testing.T) {
-	table := NewTable[TestStruct]()
-	record := table.NewRecord()
+	record := NewRecord[TestStruct]()
 
 	expect := []string{"name", "age", "job"}
-	got := table.Titles(record)
+	got := Titles(record)
 	if !reflect.DeepEqual(got, expect) {
 		t.Errorf("table.Titles test faile, got %v, expect %v", got, expect)
 	}
 
-	nested := NewTable[Nested]()
-	nestRecord := nested.NewRecord()
+	nestRecord := NewRecord[Nested]()
 	expect = []string{"job"}
-	got = nested.Titles(nestRecord)
+	got = Titles(nestRecord)
 	if !reflect.DeepEqual(got, expect) {
 		t.Errorf("table.Titles test failed, got %v, expect %v", got, expect)
 	}
 }
 
 func TestTable_Values(t *testing.T) {
-	table := NewTable[TestStruct]()
 	demo := TestStruct{
 		Name:  gofakeit.Name(),
 		Empty: gofakeit.UUID(),
@@ -38,8 +35,20 @@ func TestTable_Values(t *testing.T) {
 	}
 	expect := []driver.Value{demo.Name, demo.Empty, demo.Age, demo.Nested.Job}
 
-	got := table.Values(demo)
+	got := Values(demo)
 	if !reflect.DeepEqual(got, expect) {
 		t.Errorf("TestTable_Values failed, got %v, expect %v", got, expect)
+	}
+}
+
+func TestNewRecord(t *testing.T) {
+	age, name := "100", "o98k-ok"
+	record := NewRecord(func(v *TestStruct) {
+		v.Age = age
+	}, func(v *TestStruct) {
+		v.Name = name
+	})
+	if age != record.Age || name != record.Name {
+		t.Errorf("TestNewRecord failed, got %v", record)
 	}
 }
