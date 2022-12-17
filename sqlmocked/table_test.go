@@ -26,14 +26,20 @@ func TestTable_Titles(t *testing.T) {
 }
 
 func TestTable_Values(t *testing.T) {
-	demo := TestStruct{
-		Name:  gofakeit.Name(),
-		Empty: gofakeit.UUID(),
-		Nested: Nested{
-			Job: gofakeit.JobTitle(),
+	type deepStruct struct {
+		Pointer    *string `gorm:"column:pointer"`
+		TestStruct `gorm:"embedded"`
+	}
+	demo := deepStruct{
+		TestStruct: TestStruct{
+			Name:  gofakeit.Name(),
+			Empty: gofakeit.UUID(),
+			Nested: Nested{
+				Job: gofakeit.JobTitle(),
+			},
 		},
 	}
-	expect := []driver.Value{demo.Name, demo.Empty, demo.Age, demo.Nested.Job}
+	expect := []driver.Value{nil, demo.Name, demo.Empty, demo.Age, demo.Nested.Job}
 
 	got := Values(demo)
 	if !reflect.DeepEqual(got, expect) {

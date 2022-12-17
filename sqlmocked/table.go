@@ -46,6 +46,10 @@ func Values[T any](record T) []driver.Value {
 	var res []driver.Value
 	GloabalExtract.ExtractVals(reflect.ValueOf(&record), func(v reflect.Value) {
 		if v.Kind() == reflect.Pointer {
+			if v.IsNil() {
+				res = append(res, nil)
+				return
+			}
 			v = v.Elem()
 		}
 		res = append(res, v.Interface())
