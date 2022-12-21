@@ -21,7 +21,10 @@ func init() {
 
 func NewRecord[T any](customFncs ...func(v *T)) T {
 	record := new(T)
-	gofakeit.Struct(record)
+	err := gofakeit.Struct(record)
+	if err != nil {
+		panic(err)
+	}
 	for _, fnc := range customFncs {
 		fnc(record)
 	}
